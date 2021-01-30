@@ -2,9 +2,11 @@ package kata5p1;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 /**
  * Debemos conectar con la BD Kata5 y realizar una consulta 
@@ -14,7 +16,7 @@ import java.sql.Statement;
  */
 public class Kata5P1 {
     
-   private static Connection connect() {
+    private static Connection connect() {
     // SQLite connection string
         String url = "jdbc:sqlite:C:\\Users\\angel\\OneDrive\\Documentos\\NetBeansProjects\\Kata5P1\\BD_Kata5.db";
         Connection conn = null;
@@ -63,10 +65,35 @@ public class Kata5P1 {
                 System.out.println(e.getMessage());
             }
         }
-        
-    public static void main(String[] args) {
-        selectAll();
-        createNewTable();   //Hay que cerrar el DB Browser SQlite porque si no sale mensaje error database is locked 
+    
+    private static String fileName;
+    private static List<String> emails;
+    
+    public static void insert(String email) {
+        String sql = "INSERT INTO EMAIL(mail) VALUES(?)";
+        try (
+            Connection conn = connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, email);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
     
+    public static void main(String[] args) {
+        //selectAll();
+        //createNewTable();   //Hay que cerrar el DB Browser SQlite porque si no sale mensaje error database is locked 
+        
+        try {
+            fileName = new String("C:\\Users\\angel\\OneDrive\\Documentos\\NetBeansProjects\\Kata5P1\\txtFileEmail\\email.txt");
+            emails = MailListReader.read(fileName);
+            for( int i = 0; i < emails.size(); i++) {
+                insert(emails.get(i));
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Ha ocurrido un error con el fichero");
+        }
+    }
 }
