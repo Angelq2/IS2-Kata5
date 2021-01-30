@@ -45,8 +45,28 @@ public class Kata5P1 {
         }
     }
     
+        public static void createNewTable() {
+            //Cadena de conexion SQLite
+            //String url = "jdbc:sqlite:C:\\Users\\angel\\OneDrive\\Documentos\\NetBeansProjects\\Kata5P1\\BD_Kata5.db";
+            
+            // Instrucción SQL para crear nueva tabla
+            String sql = "CREATE TABLE IF NOT EXISTS EMAIL (\n"
+                + " id integer PRIMARY KEY AUTOINCREMENT,\n"
+                + " mail text NOT NULL);";
+            try (
+                Connection conn = connect();
+                Statement stmt = conn.createStatement()) {
+                // Se crea la nueva tabla
+                stmt.execute(sql);
+                System.out.println("Tabla creada");
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        
     public static void main(String[] args) {
         selectAll();
+        createNewTable();   //Hay que cerrar el DB Browser SQlite porque si no sale mensaje error database is locked 
     }
     
 }
